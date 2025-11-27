@@ -2,63 +2,76 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
+use App\Models\Project;
+use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        //
+        if (in_array(auth()->user()->role,['admin','team_leader'])){
+            $tasks=Task::all();
+        }
+        else{
+            $tasks=Task::query()->where('tasks.assigned_to',auth()->user()->id)->get();
+        }
+        return view('tasks.index',compact('tasks'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
     public function create()
     {
-        //
+        $projects=Project::all();
+        $users=User::all();
+
+        return view('tasks.create',compact('projects','users'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function store(StoreTaskRequest $request)
     {
-        //
+        $newTask=new Task($request->validated());
+
+        $newTask->save();
+        return redirect()->route('tasks.index')->with('success','Task created successfully');
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
-        //
+        $task=Task::find($id);
+        return view('tasks.show',compact('task'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(string $id)
     {
-        //
+        $task=Task::find($id);
+        $projects=Project::all();
+        $users=User::all();
+        return view('tasks.edit',compact('task','projects','users'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+
+    public function update(UpdateTaskRequest $request, string $id)
     {
-        //
+        Task::find($id)->update($request->validated());
+        return redirect()->route('tasks.index')->with('success','Task updated successfully');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
         //
+    }
+
+    public function updateStatus($id, Request $request)
+    {
+
     }
 }

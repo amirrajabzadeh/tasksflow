@@ -13,9 +13,10 @@ class Project extends Model
         'name',
         'description',
         'created_by',
+        'status',
     ];
 
-    public function creator()
+    public function user()
     {
         return $this->belongsTo(User::class,'created_by');
     }

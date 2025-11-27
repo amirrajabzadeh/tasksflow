@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('description')->nullable();
             $table->foreignId('created_by')->nullable()->references('id')->on('users')->cascadeOnDelete();
+            $table->enum('status', ['open', 'closed'])->default('open');
             $table->timestamps();
         });
     }

@@ -6,14 +6,23 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
 });
 
 
-Route::resource('dashboard', DashboardController::class);
+Route::post('/login',[DashboardController::class,'login'])->name('login');
 
-Route::resource('projects', ProjectController::class)->middleware('role:admin,team_leader');
+Route::group(['middleware' => 'auth'], function () {
 
-Route::resource('tasks', TaskController::class);
+    Route::get('/logout',[DashboardController::class,'logout'])->name('logout');
 
-Route::post('tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
+    Route::resource('dashboard', DashboardController::class);
+
+    Route::resource('projects', ProjectController::class)->middleware('role:admin,team_leader');
+
+    Route::resource('tasks', TaskController::class);
+
+    Route::post('tasks/{task}/update-status', [TaskController::class, 'updateStatus'])->name('tasks.update-status');
+});
+
+
