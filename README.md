@@ -61,7 +61,7 @@
 ## 🛠 تکنولوژی‌ها
 
 ### Backend
-- **PHP 8.x** + **Laravel 10.x**
+- **PHP 8.x** + **Laravel 12.x**
 - **Eloquent ORM**
 - **MySQL** Database
 
